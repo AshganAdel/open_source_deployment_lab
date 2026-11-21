@@ -1,0 +1,52 @@
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - wordpress:/var/www/html:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - public
+      - private
+    depends_on:
+      - wordpress
+  
+  wordpress:
+    image: wordpress:php8.2-fpm
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      - private
+    environment:
+      WORDPRESS_DB_HOST: ${DB_HOST:?DB_HOST is required}
+      WORDPRESS_DB_NAME: ${MARIADB_DATABASE:?DB_NAME is required}
+      WORDPRESS_DB_USER: ${DB_USER:?DB_USER is required}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      WORDPRESS_CONFIG_EXTRA: define('DISALLOW_FILE_EDIT', true);
+    depends_on:
+      - mariadb
+  
+  mariadb:
+    image: mariadb:11
+    restart: unless-stopped
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - private
+    environment:
+      MARIADB_DATABASE: ${MARIADB_DATABASE:?DB_NAME is required}
+      MARIADB_USER: ${DB_USER:?DB_USER is required}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:?DB_ROOT_PASSWORD is required}
+
+networks:
+  private:
+
+  public:
+    internal: true
+volumes:
+  wordpress:
+
+  mariadb_data:
+
