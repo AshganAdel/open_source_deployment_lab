@@ -70,7 +70,6 @@ open_source_deployment_lab/
 ├── .gitignore
 ├── Makefile
 ├── docker-compose.yml
-├── wordpress_backup.sql
 └── nginx/
     └── default.conf
 ```
@@ -242,7 +241,4 @@ It does not currently include Kubernetes manifests, Terraform
 infrastructure provisioning, a CI/CD pipeline, or monitoring
 configuration.
 
-## License
 
-Add a license file if you intend to distribute this project as open
-source.
